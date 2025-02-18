@@ -2,14 +2,16 @@
   <div class="enregistrer-participation">
     <h2>Enregistrer une participation</h2>
     <form @submit.prevent="enregistrerParticipation">
+
       <div class="form-group">
         <label for="personne">Personne :</label>
         <select id="personne" v-model="selectedPersonne" required>
           <option v-for="personne in personnes" :key="personne.matricule" :value="personne.matricule">
-            {{ personne.nom }} {{ personne.prenom }}
+            {{ personne.prenom }} {{ personne.nom }} - {{ personne.poste }}
           </option>
         </select>
       </div>
+
       <div class="form-group">
         <label for="projet">Projet :</label>
         <select id="projet" v-model="selectedProjet" required>
@@ -18,50 +20,55 @@
           </option>
         </select>
       </div>
+
       <div class="form-group">
         <label for="role">Rôle :</label>
-        <input type="text" id="role" v-model="role" required />
+        <input type="text" id="role" v-model="role" required/>
       </div>
+
       <div class="form-group">
         <label for="pourcentage">Pourcentage :</label>
-        <input type="range" id="pourcentage" v-model="pourcentage" min="0" max="100" step="1" required />
+        <input type="range" id="pourcentage" v-model="pourcentage" min="0" max="100" step="1"
+               required/>
         <span>{{ pourcentage }}%</span>
       </div>
+
       <button type="submit">Enregistrer</button>
     </form>
+
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import {ref, onMounted} from "vue";
+import axios from "axios";
 
 const personnes = ref([]);
 const projets = ref([]);
 const selectedPersonne = ref(null);
 const selectedProjet = ref(null);
-const role = ref('');
+const role = ref("");
 const pourcentage = ref(10); // Valeur par défaut
-const errorMessage = ref('');
+const errorMessage = ref("");
 
 onMounted(async () => {
   try {
     // Récupérer les personnes depuis l'API
-    const responsePersonnes = await axios.get('/api/personnes');
+    const responsePersonnes = await axios.get("http://localhost:8080/api/personnes");
     personnes.value = responsePersonnes.data;
 
     // Récupérer les projets depuis l'API
-    const responseProjets = await axios.get('/api/projets');
+    const responseProjets = await axios.get("http://localhost:8080/api/projets");
     projets.value = responseProjets.data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des données :', error);
+    console.error("Erreur lors de la récupération des données :", error);
   }
 });
 
 const enregistrerParticipation = async () => {
   try {
-    await axios.post('/api/gestion/participation', null, {
+    await axios.post("http://localhost:8080/api/gestion/participation", null, {
       params: {
         matricule: selectedPersonne.value,
         codeProjet: selectedProjet.value,
@@ -69,12 +76,12 @@ const enregistrerParticipation = async () => {
         pourcentage: pourcentage.value,
       },
     });
-    alert('Participation enregistrée avec succès !');
+    alert("Participation enregistrée avec succès !");
   } catch (error) {
     if (error.response) {
       errorMessage.value = error.response.data.message;
     } else {
-      errorMessage.value = 'Une erreur est survenue lors de l\'enregistrement.';
+      errorMessage.value = "Une erreur est survenue lors de l'enregistrement.";
     }
   }
 };
