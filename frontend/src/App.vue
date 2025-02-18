@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import EnregistrerParticipation from "@/components/EnregistrerParticipation.vue";
 </script>
 
 <template>
@@ -13,12 +14,15 @@ import HelloWorld from './components/HelloWorld.vue'
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">Les projets</RouterLink>
+        <RouterLink to="/enregistrer-participation">Enregistrer une participation</RouterLink>
       </nav>
     </div>
   </header>
 
   <RouterView />
 </template>
+
+
 
 <style scoped>
 header {
