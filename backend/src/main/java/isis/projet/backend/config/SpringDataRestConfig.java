@@ -8,6 +8,8 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Component
 public class SpringDataRestConfig
@@ -17,12 +19,19 @@ public class SpringDataRestConfig
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-        // Expose les id de toutes les entités dans l'API REST
         config.exposeIdsFor(entityManager
                 .getMetamodel()
                 .getEntities()
                 .stream()
                 .map(Type::getJavaType)
                 .toArray(Class[]::new));
+
+        cors.addMapping("/**")
+                .allowedOrigins("http://localhost:5173") // Permettre les requêtes depuis le frontend
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
+
+
 }
